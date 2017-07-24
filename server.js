@@ -22,19 +22,17 @@ app.use(express.static("public"));
 var PORT = process.env.PORT || 3000;
 
 // database configuration with mongoose
-mongoose.connect("mongodb://localhost/NewsScraper");
-var db = mongoose.connection;
 
-// show any mongoose errors
-db.on("error", function(){
-	console.log("Mongoose Error: ", error);
-});
+var db = process.env.MONGODB_URI || "mongodb://localhost/NewsScraper";
 
-// once logged in to the db through mongoose, log a success message
-db.once("open", function(){
-	console.log("Mongoose connection successful.");
+mongoose.connect(db, function(error){
+  if (error){
+    throw error;
 
-});
+  } else {
+    console.log("Connected to mongoose");
+  }
+})
 
 
 // routes
