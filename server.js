@@ -12,7 +12,6 @@ mongoose.Promise = Promise;
 
 var app = express();
 
-
 app.use(bodyParser.urlencoded({
 	extended: false
 }));
@@ -34,8 +33,15 @@ mongoose.connect(db, function(error){
   }
 })
 
+app.listen(PORT, function(){
+  console.log("App running on port", PORT);
+});
 
 // routes
+app.get("/", function(req, res){
+  res.sendFile("index.html");
+})
+
 app.get("/scrape", function(req, res) {
 	console.log("scrape");
   request("https://www.reddit.com/r/space/", function(error, response, html) {
@@ -86,6 +92,7 @@ app.get("/articles/:id", function(req, res) {
     if (error) {
       console.log(error);
     } else {
+
       res.json(doc);
     }
   }); // end of .exec
@@ -94,6 +101,7 @@ app.get("/articles/:id", function(req, res) {
 app.post("/articles/:id", function(req, res) {
 
   var newComment = new Comment(req.body);
+
 
   newComment.save(function(error, doc) {
     if (error) {
@@ -104,6 +112,8 @@ app.post("/articles/:id", function(req, res) {
         if (err) {
           console.log(err);
         } else {
+
+          
           res.send(doc);
         }
       }); // end of .exec
@@ -113,6 +123,3 @@ app.post("/articles/:id", function(req, res) {
 
 
 
-app.listen(PORT, function(){
-	console.log("App running on port", PORT);
-});
